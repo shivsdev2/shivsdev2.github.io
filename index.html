@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>shivank: ~</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --panel: #25282e;
+    --window: #dedede;
+    --border: #777;
+    --accent: #91a8c5;
+    --text: #252525;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+body {
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'IBM Plex Mono', monospace;
+    background: #151d2a;
+    color: white;
+}
+
+/* DESKTOP */
+
+.desktop {
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse at 70% 60%, #344a64 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 20%, #343f56 0%, transparent 45%),
+        linear-gradient(135deg, #131a26, #202d40 60%, #111722);
+}
+
+.wallpaper {
+    position: absolute;
+    inset: 0;
+    opacity: .12;
+    background-image:
+      linear-gradient(rgba(255,255,255,.12) 1px, transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.12) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
+/* TOP PANEL */
+
+.topbar {
+    height: 32px;
+    background: linear-gradient(#41454c, #292c32);
+    border-bottom: 1px solid #101216;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 22px;
+    font-size: 11px;
+    position: relative;
+    z-index: 20;
+    box-shadow: 0 2px 5px #0005;
+}
+
+.menu-button {
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    gap: 7px;
+    align-items: center;
+}
+
+.menu-button:hover {
+    color: #a8c5eb;
+}
+
+.menu-dropdown {
+    display: none;
+    position: absolute;
+    top: 31px;
+    left: 5px;
+    width: 190px;
+    background: #33373e;
+    border: 1px solid #777;
+    box-shadow: 3px 4px 12px #0009;
+    padding: 5px;
+}
+
+.menu-dropdown.show {
+    display: block;
+}
+
+.menu-item {
+    padding: 10px;
+    cursor: pointer;
+    color: #eee;
+}
+
+.menu-item:hover {
+    background: #526c8c;
+}
+
+.top-info {
+    margin-left: auto;
+    color: #c8c8c8;
+}
+
+/* DESKTOP ICONS */
+
+.icons {
+    position: absolute;
+    top: 52px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    z-index: 1;
+}
+
+.desktop-icon {
+    width: 82px;
+    text-align: center;
+    cursor: pointer;
+    padding: 8px 2px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    color: white;
+    text-shadow: 1px 2px 3px black;
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.desktop-icon:hover {
+    background: #809bbd44;
+    border: 1px solid #c4d7ef66;
+}
+
+.desktop-icon .emoji {
+    font-size: 30px;
+    display: block;
+    margin-bottom: 5px;
+    filter: drop-shadow(2px 3px 2px #0009);
+}
+
+/* WINDOWS */
+
+.window {
+    position: absolute;
+    top: 15%;
+    left: 25%;
+    width: min(570px, 85vw);
+    max-height: 75vh;
+    background: var(--window);
+    color: var(--text);
+    border: 2px solid #8b8b8b;
+    box-shadow: 4px 6px 20px #0008;
+    display: none;
+    flex-direction: column;
+    z-index: 5;
+}
+
+.window.active {
+    display: flex;
+}
+
+.window-header {
+    height: 32px;
+    background: linear-gradient(#60646c, #363a42);
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: grab;
+    flex-shrink: 0;
+    user-select: none;
+}
+
+.window-header:active {
+    cursor: grabbing;
+}
+
+.window-title {
+    flex: 1;
+}
+
+.window-controls {
+    display: flex;
+    gap: 4px;
+}
+
+.window-controls button {
+    width: 20px;
+    height: 19px;
+    border: 1px solid #888;
+    background: linear-gradient(#eee, #aaa);
+    color: #222;
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 10px;
+}
+
+.window-controls button:hover {
+    background: #fff;
+}
+
+.window-content {
+    padding: 25px;
+    overflow-y: auto;
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+.window-content h1 {
+    font-size: 24px;
+    margin-bottom: 8px;
+    letter-spacing: -1px;
+}
+
+.window-content h2 {
+    font-size: 15px;
+    margin: 20px 0 8px;
+}
+
+.window-content p {
+    color: #555;
+    margin-bottom: 12px;
+}
+
+.window-content a {
+    color: #345c89;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #aaa;
+    margin: 16px 0;
+}
+
+/* TERMINAL */
+
+.terminal {
+    background: #11151b;
+    color: #b7d4b3;
+    font-size: 12px;
+    padding: 20px;
+    min-height: 230px;
+    line-height: 2;
+}
+
+.terminal .muted {
+    color: #8293a7;
+}
+
+.terminal .command {
+    color: #f2c879;
+}
+
+.terminal .green {
+    color: #a7d99b;
+}
+
+/* PROJECTS AND ACHIEVEMENTS */
+
+.project {
+    background: #eeeeee;
+    border: 1px solid #aaa;
+    padding: 13px;
+    margin: 12px 0;
+}
+
+.project h3 {
+    font-size: 13px;
+}
+
+.project a {
+    display: inline-block;
+    margin-top: 8px;
+}
+
+/* BOTTOM PANEL */
+
+.taskbar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 43px;
+    background: linear-gradient(#393d45, #22252b);
+    border-top: 1px solid #666;
+    display: flex;
+    align-items: center;
+    padding: 5px 8px;
+    gap: 8px;
+    z-index: 30;
+}
+
+.start {
+    height: 30px;
+    padding: 0 12px;
+    background: linear-gradient(#555b65, #353941);
+    border: 1px solid #777;
+    color: white;
+    font-family: inherit;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.task {
+    background: #444a55;
+    color: white;
+    border: 1px solid #747984;
+    padding: 7px 12px;
+    font-family: inherit;
+    font-size: 10px;
+    cursor: pointer;
+    max-width: 150px;
+}
+
+.task:hover, .task.selected {
+    background: #657b99;
+}
+
+.clock {
+    margin-left: auto;
+    color: white;
+    font-size: 11px;
+    padding: 0 10px;
+}
+
+/* MOBILE */
+
+@media(max-width: 600px) {
+    .icons {
+        left: 5px;
+        top: 48px;
+        gap: 7px;
+    }
+
+    .desktop-icon {
+        width: 65px;
+        font-size: 9px;
+    }
+
+    .desktop-icon .emoji {
+        font-size: 25px;
+    }
+
+    .window {
+        left: 12%;
+        top: 18%;
+        width: 84%;
+        max-height: 70vh;
+    }
+
+    .window-content {
+        padding: 18px;
+    }
+
+    .topbar {
+        gap: 10px;
+    }
+
+    .taskbar {
+        gap: 4px;
+    }
+
+    .task {
+        padding: 7px;
+        font-size: 9px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="desktop">
+<div class="wallpaper"></div>
+
+<!-- TOP PANEL -->
+
+<header class="topbar">
+    <div class="menu-button" onclick="toggleMenu()">
+        <span>✿</span> Applications
+    </div>
+
+    <div>Places</div>
+    <div>System</div>
+
+    <div class="top-info">shivank@fedora ~</div>
+
+    <div class="menu-dropdown" id="menu">
+        <div class="menu-item" onclick="openWindow('about')">👤 About Me</div>
+        <div class="menu-item" onclick="openWindow('projects')">📁 Projects</div>
+        <div class="menu-item" onclick="openWindow('achievements')">🏆 Achievements</div>
+        <div class="menu-item" onclick="openWindow('skills')">⚙ Skills</div>
+        <div class="menu-item" onclick="openWindow('contact')">✉ Contact</div>
+        <div class="menu-item" onclick="openWindow('terminal')">▣ Terminal</div>
+    </div>
+</header>
+
+<!-- DESKTOP SHORTCUTS -->
+
+<div class="icons">
+
+    <div class="desktop-icon" onclick="openWindow('about')">
+        <span class="emoji">👤</span>
+        About_Me
+    </div>
+
+    <div class="desktop-icon" onclick="openWindow('projects')">
+        <span class="emoji">📁</span>
+        My_Projects
+    </div>
+
+    <div class="desktop-icon" onclick="openWindow('achievements')">
+        <span class="emoji">🏆</span>
+        Achievements
+    </div>
+
+    <div class="desktop-icon" onclick="openWindow('skills')">
+        <span class="emoji">⚙️</span>
+        Skills
+    </div>
+
+    <div class="desktop-icon" onclick="openWindow('contact')">
+        <span class="emoji">✉️</span>
+        Contact
+    </div>
+
+    <div class="desktop-icon" onclick="openWindow('terminal')">
+        <span class="emoji">▣</span>
+        Terminal
+    </div>
+
+</div>
+
+<!-- ABOUT WINDOW -->
+
+<div class="window active" id="about">
+    <div class="window-header">
+        <span class="window-title">👤 about-me.txt</span>
+        <div class="window-controls">
+            <button onclick="minimize('about')">_</button>
+            <button onclick="closeWindow('about')">×</button>
+        </div>
+    </div>
+
+    <div class="window-content">
+        <small>/home/user/about/</small>
+        <hr>
+
+        <h1>Shivank Sharma</h1>
+
+        <p>Iam 15 year old kid</p>
+
+        <hr>
+        <p>LOCATION: India / your basement)</p>
+    </div>
+</div>
+
+<!-- PROJECTS WINDOW -->
+
+<div class="window" id="projects">
+    <div class="window-header">
+        <span class="window-title">📁 File Manager — Projects</span>
+        <div class="window-controls">
+            <button onclick="minimize('projects')">_</button>
+            <button onclick="closeWindow('projects')">×</button>
+        </div>
+    </div>
+
+    <div class="window-content">
+        <small>/home/user/projects/</small>
+        <hr>
+
+        <h1>My Projects</h1>
+        <p>Things I've built, explored and experimented with.</p>
+
+        <div class="project">
+            <h3>📂 powernotd/</h3>
+            <p>
+                A Linux battery notification daemon written in Rust.
+                This repository is a fork of the original project.
+            </p>
+            <a href="https://github.com/shivsdev2/powernotd"
+               target="_blank" rel="noopener noreferrer">[ VIEW REPOSITORY ↗ ]</a>
+        </div>
+
+        <div class="project">
+            <h3>📂 aero-prox/</h3>
+            <p>
+                A Python application that tracks flights within a
+                specified radius of an airport using FlightRadar24 data.
+            </p>
+            <a href="https://github.com/shivsdev2/aero-prox"
+               target="_blank" rel="noopener noreferrer">[ VIEW REPOSITORY ↗ ]</a>
+        </div>
+
+        <div class="project">
+            <h3>📂 chip8/</h3>
+            <p>
+                A CHIP-8 project implemented in Rust,
+                associated with Hack Club.
+            </p>
+            <a href="https://github.com/shivsdev2/chip8"
+               target="_blank" rel="noopener noreferrer">[ VIEW REPOSITORY ↗ ]</a>
+        </div>
+
+        <div class="project">
+            <h3>📂 elegant-solution-mathematics/</h3>
+            <p>
+                A collection of mathematical solutions and experiments.
+            </p>
+            <a href="https://github.com/shivsdev2/elegant-solution-mathematics"
+               target="_blank" rel="noopener noreferrer">[ VIEW REPOSITORY ↗ ]</a>
+        </div>
+
+        <div class="project">
+            <h3>📂 linux-kernel-build/</h3>
+            <p>
+                Compiled my own Linux kernel.
+            </p>
+            <a href="https://github.com/shivsdev2/linux-kernel-build"
+               target="_blank" rel="noopener noreferrer">[ VIEW REPOSITORY ↗ ]</a>
+        </div>
+
+        <div class="project">
+            <h3>📂 Fedora Community</h3>
+            <p>
+                I contribute to Fedora Discussion forums (trust level 2) and take part
+                in testing for Fedora..
+            </p>
+            <a href="https://discussion.fedoraproject.org/u/shivanksharma12/summary"
+               target="_blank" rel="noopener noreferrer">[ FEDORA DISCUSSION PROFILE ↗ ]</a>
+            <br>
+            <a href="https://bodhi.fedoraproject.org/users/shivanksharma12"
+               target="_blank" rel="noopener noreferrer">[ FEDORA BODHI PROFILE ↗ ]</a>
+        </div>
+
+        <div class="project">
+            <h3>📦 rmatrix — Fedora COPR</h3>
+            <p>
+                I package rmatrix for Fedora COPR.
+            </p>
+            <a href="https://github.com/Tripstack-Corp/rmatrix"
+               target="_blank" rel="noopener noreferrer">[ VIEW RMATRIX REPOSITORY ↗ ]</a>
+        </div>
+    </div>
+</div>
+
+<!-- ACHIEVEMENTS WINDOW -->
+
+<div class="window" id="achievements">
+    <div class="window-header">
+        <span class="window-title">🏆 File Manager — Achievements</span>
+        <div class="window-controls">
+            <button onclick="minimize('achievements')">_</button>
+            <button onclick="closeWindow('achievements')">×</button>
+        </div>
+    </div>
+
+    <div class="window-content">
+        <small>/home/user/achievements/</small>
+        <hr>
+
+        <h1>My Academics</h1>
+        <p>Academic examinations, competitions and scholarships.</p>
+
+        <div class="project">
+            <h3>01 — IOQM 2025</h3>
+            <p>Appeared for IOQM 2025 with score 19.</p>
+        </div>
+
+        <div class="project">
+            <h3>02 — IOQM 2026</h3>
+            <p>Appeared for IOQM 2026 with score 22.</p>
+        </div>
+
+        <div class="project">
+            <h3>03 — Purple Comet</h3>
+            <p>Appeared for Purple Comet, team of 4, with rank 217.</p>
+        </div>
+
+        <div class="project">
+            <h3>04 — LIMIT (ISI) 2025–26</h3>
+            <p>Appeared for LIMIT (ISI) 2025–26.</p>
+        </div>
+
+        <div class="project">
+            <h3>05 — SEHSS 2025</h3>
+            <p>Appeared for SEHSS 2025 with score 49.</p>
+        </div>
+
+        <div class="project">
+            <h3>06 — TALLENTEX 2025</h3>
+            <p>Received a 55% scholarship.</p>
+        </div>
+
+        <div class="project">
+            <h3>07 — PWNSAT Level 1 2025</h3>
+            <p>Appeared for PWNSAT Level 1 2025.</p>
+        </div>
+
+        <div class="project">
+            <h3>08 — PWNSAT Level 2</h3>
+            <p>Appeared for PWNSAT Level 2.</p>
+        </div>
+
+        <div class="project">
+            <h3>09 — PWNSAT Level 1 2026</h3>
+            <p>Secured AIR 593.</p>
+        </div>
+
+        <div class="project">
+            <h3>10 — PWNSAT Level 2 2026</h3>
+            <p>Selected for the AIR Batch.</p>
+        </div>
+
+        <div class="project">
+            <h3>11 — FTRE 2024</h3>
+            <p>Received a 100% scholarship on tuition fees.</p>
+        </div>
+
+        <div class="project">
+            <h3>12 — GSAT 2024</h3>
+            <p>Received a 100% scholarship on tuition fees.</p>
+        </div>
+
+        <hr>
+    </div>
+</div>
+
+<!-- SKILLS WINDOW -->
+
+<div class="window" id="skills">
+    <div class="window-header">
+        <span class="window-title">⚙ system-info.txt</span>
+        <div class="window-controls">
+            <button onclick="minimize('skills')">_</button>
+            <button onclick="closeWindow('skills')">×</button>
+        </div>
+    </div>
+
+    <div class="window-content">
+        <h1>System Information</h1>
+        <hr>
+
+        <p><b>USER:</b> Shivank Sharma</p>
+        <p><b>OS:</b> Fedora 45</p>
+
+        <h2>Activities</h2>
+        <p>▸ Occasionally participate in OverTheWire CTFs</p>
+
+        <hr>
+        
+    </div>
+</div>
+
+<!-- CONTACT WINDOW -->
+
+<div class="window" id="contact">
+    <div class="window-header">
+        <span class="window-title">✉ contact.txt</span>
+        <div class="window-controls">
+            <button onclick="minimize('contact')">_</button>
+            <button onclick="closeWindow('contact')">×</button>
+        </div>
+    </div>
+
+    <div class="window-content">
+        <h1>Contact</h1>
+        <hr>
+
+        <p>
+            <b>DISCORD:</b>
+            <a href="https://discord.com/users/678508694656253962"
+               target="_blank" rel="noopener noreferrer">Open Discord profile ↗</a>
+        </p>
+
+        <p>
+            <b>EMAIL:</b>
+            <a href="mailto:shivanksharma@tutamail.com">shivanksharma@tutamail.com</a>
+        </p>
+
+        <hr>
+        <a href="mailto:shivanksharma@tutamail.com">[ SEND AN EMAIL ↗ ]</a>
+    </div>
+</div>
+
+<!-- TERMINAL WINDOW -->
+
+<div class="window" id="terminal">
+    <div class="window-header">
+        <span class="window-title">▣ Terminal — shivank</span>
+        <div class="window-controls">
+            <button onclick="minimize('terminal')">_</button>
+            <button onclick="closeWindow('terminal')">×</button>
+        </div>
+    </div>
+
+    <div class="terminal">
+        <div class="muted">shivank is cool</div>
+        <br>
+        <span class="green">shivank</span>:~$ whoami
+        <br>
+        <span class="command">human</span>
+        <br><br>
+    </div>
+</div>
+
+<!-- BOTTOM TASKBAR -->
+
+<footer class="taskbar">
+    <button class="start" onclick="toggleMenu()">✿ Menu</button>
+
+    <button class="task selected" id="task-about"
+        onclick="openWindow('about')">about-me</button>
+
+    <button class="task" id="task-projects"
+        onclick="openWindow('projects')">projects</button>
+
+    <button class="task" id="task-achievements"
+        onclick="openWindow('achievements')">achievements</button>
+
+    <div class="clock" id="clock">00:00</div>
+</footer>
+
+</div>
+
+<script>
+const windows = ['about', 'projects', 'achievements', 'skills', 'contact', 'terminal'];
+let highestZ = 10;
+
+function toggleMenu() {
+    document.getElementById('menu').classList.toggle('show');
+}
+
+function closeMenu() {
+    document.getElementById('menu').classList.remove('show');
+}
+
+function openWindow(id) {
+    closeMenu();
+
+    const win = document.getElementById(id);
+    if (!win) return;
+
+    win.style.display = 'flex';
+    win.classList.add('active');
+    win.style.zIndex = ++highestZ;
+
+    document.querySelectorAll('.task').forEach(task =>
+        task.classList.remove('selected')
+    );
+
+    const task = document.getElementById('task-' + id);
+    if (task) task.classList.add('selected');
+}
+
+function closeWindow(id) {
+    const win = document.getElementById(id);
+    if (!win) return;
+
+    win.classList.remove('active');
+    win.style.display = 'none';
+
+    const task = document.getElementById('task-' + id);
+    if (task) task.classList.remove('selected');
+}
+
+function minimize(id) {
+    closeWindow(id);
+}
+
+// Bring clicked window to front
+
+document.querySelectorAll('.window').forEach(win => {
+    win.addEventListener('mousedown', () => {
+        win.style.zIndex = ++highestZ;
+    });
+});
+
+// Draggable windows
+
+document.querySelectorAll('.window-header').forEach(header => {
+    let dragging = false;
+    let startX, startY, initialX, initialY;
+
+    header.addEventListener('pointerdown', e => {
+        if (e.target.tagName === 'BUTTON') return;
+
+        const win = header.parentElement;
+        dragging = true;
+
+        win.style.zIndex = ++highestZ;
+
+        startX = e.clientX;
+        startY = e.clientY;
+        initialX = win.offsetLeft;
+        initialY = win.offsetTop;
+
+        header.setPointerCapture(e.pointerId);
+    });
+
+    header.addEventListener('pointermove', e => {
+        if (!dragging) return;
+
+        const win = header.parentElement;
+        win.style.left = initialX + e.clientX - startX + 'px';
+        win.style.top = initialY + e.clientY - startY + 'px';
+    });
+
+    header.addEventListener('pointerup', () => {
+        dragging = false;
+    });
+
+    header.addEventListener('pointercancel', () => {
+        dragging = false;
+    });
+});
+
+// Clock
+
+function updateClock() {
+    const now = new Date();
+
+    document.getElementById('clock').textContent =
+        now.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+}
+
+updateClock();
+setInterval(updateClock, 1000);
+
+// Close menu when clicking elsewhere
+
+document.addEventListener('click', e => {
+    if (!e.target.closest('.menu-button') &&
+        !e.target.closest('.menu-dropdown') &&
+        !e.target.closest('.start')) {
+        closeMenu();
+    }
+});
+</script>
+
+</body>
+</html>
