@@ -1,1 +1,0 @@
-Ai generated design, however the XFCE idea was mine.
