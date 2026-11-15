@@ -123,6 +123,14 @@ body {
     z-index: 1;
 }
 
+/* Row for About_Me + Blog side by side */
+
+.icon-row {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+
 .desktop-icon {
     width: 82px;
     text-align: center;
@@ -155,7 +163,7 @@ body {
     top: 15%;
     left: 25%;
     width: min(570px, 85vw);
-    max-height: 75vh;
+    max-height: calc(85vh - 55px);
     background: var(--window);
     color: var(--text);
     border: 2px solid #8b8b8b;
@@ -167,6 +175,23 @@ body {
 
 .window.active {
     display: flex;
+}
+
+/* FULLSCREEN */
+
+.window.fullscreen {
+    top: 32px !important;
+    left: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: calc(100vh - 32px - 43px) !important;
+    max-height: none !important;
+    border: none;
+    box-shadow: none;
+}
+
+.window.fullscreen .window-header {
+    cursor: default;
 }
 
 .window-header {
@@ -205,10 +230,15 @@ body {
     cursor: pointer;
     font-size: 12px;
     line-height: 10px;
+    padding: 0;
 }
 
 .window-controls button:hover {
     background: #fff;
+}
+
+.window-controls .fs-btn {
+    font-size: 10px;
 }
 
 .window-content {
@@ -299,6 +329,17 @@ hr {
     padding: 5px 8px;
     gap: 8px;
     z-index: 30;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+}
+
+.taskbar::-webkit-scrollbar {
+    height: 4px;
+}
+
+.taskbar::-webkit-scrollbar-thumb {
+    background: #6b7380;
 }
 
 .start {
@@ -310,6 +351,7 @@ hr {
     font-family: inherit;
     cursor: pointer;
     font-size: 11px;
+    flex-shrink: 0;
 }
 
 .task {
@@ -321,6 +363,11 @@ hr {
     font-size: 10px;
     cursor: pointer;
     max-width: 150px;
+    flex: 0 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .task:hover, .task.selected {
@@ -332,6 +379,7 @@ hr {
     color: white;
     font-size: 11px;
     padding: 0 10px;
+    flex-shrink: 0;
 }
 
 /* MOBILE */
@@ -340,6 +388,10 @@ hr {
     .icons {
         left: 5px;
         top: 48px;
+        gap: 7px;
+    }
+
+    .icon-row {
         gap: 7px;
     }
 
@@ -356,7 +408,14 @@ hr {
         left: 12%;
         top: 18%;
         width: 84%;
-        max-height: 70vh;
+        max-height: calc(82vh - 43px);
+    }
+
+    .window.fullscreen {
+        left: 0 !important;
+        top: 32px !important;
+        width: 100% !important;
+        height: calc(100vh - 32px - 43px) !important;
     }
 
     .window-content {
@@ -374,7 +433,44 @@ hr {
     .task {
         padding: 7px;
         font-size: 9px;
+        max-width: 90px;
     }
+}
+
+/* BLOG */
+
+.blog-article h1 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    letter-spacing: -1px;
+}
+
+.blog-article h2 {
+    font-size: 15px;
+    margin: 22px 0 10px;
+}
+
+.blog-article p {
+    color: #444;
+    margin-bottom: 12px;
+}
+
+.blog-article code {
+    font-family: 'IBM Plex Mono', monospace;
+}
+
+/* code blocks inside the blog post: compact, no 230px tall boxes */
+.blog-article .terminal {
+    overflow-x: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    margin: 10px 0;
+    font-size: 11px;
+    padding: 9px 12px;
+    min-height: 0;
+    line-height: 1.6;
+    border-left: 3px solid #3a4756;
+    border-radius: 2px;
 }
 </style>
 </head>
@@ -399,6 +495,7 @@ hr {
     <div class="menu-dropdown" id="menu">
         <div class="menu-item" onclick="openWindow('about')">👤 About Me</div>
         <div class="menu-item" onclick="openWindow('projects')">📁 Projects</div>
+        <div class="menu-item" onclick="openWindow('blog')">📝 Blog</div>
         <div class="menu-item" onclick="openWindow('achievements')">🏆 Achievements</div>
         <div class="menu-item" onclick="openWindow('skills')">⚙ Skills</div>
         <div class="menu-item" onclick="openWindow('contact')">✉ Contact</div>
@@ -410,9 +507,16 @@ hr {
 
 <div class="icons">
 
-    <div class="desktop-icon" onclick="openWindow('about')">
-        <span class="emoji">👤</span>
-        About_Me
+    <div class="icon-row">
+        <div class="desktop-icon" onclick="openWindow('about')">
+            <span class="emoji">👤</span>
+            About_Me
+        </div>
+
+        <div class="desktop-icon" onclick="openWindow('blog')">
+            <span class="emoji">🗂️</span>
+            Blog
+        </div>
     </div>
 
     <div class="desktop-icon" onclick="openWindow('projects')">
@@ -448,8 +552,9 @@ hr {
     <div class="window-header">
         <span class="window-title">👤 about-me.txt</span>
         <div class="window-controls">
-            <button onclick="minimize('about')">_</button>
-            <button onclick="closeWindow('about')">×</button>
+            <button onclick="minimize('about')" title="Minimize">_</button>
+            <button class="fs-btn" onclick="toggleFullscreen('about')" title="Fullscreen">⛶</button>
+            <button onclick="closeWindow('about')" title="Close">×</button>
         </div>
     </div>
 
@@ -459,7 +564,7 @@ hr {
 
         <h1>Shivank Sharma</h1>
 
-        <p>Iam 15 year old kid</p>
+        <p>Iam 16 year old kid</p>
 
         <hr>
         <p>LOCATION: India / your basement)</p>
@@ -472,8 +577,9 @@ hr {
     <div class="window-header">
         <span class="window-title">📁 File Manager — Projects</span>
         <div class="window-controls">
-            <button onclick="minimize('projects')">_</button>
-            <button onclick="closeWindow('projects')">×</button>
+            <button onclick="minimize('projects')" title="Minimize">_</button>
+            <button class="fs-btn" onclick="toggleFullscreen('projects')" title="Fullscreen">⛶</button>
+            <button onclick="closeWindow('projects')" title="Close">×</button>
         </div>
     </div>
 
@@ -556,14 +662,181 @@ hr {
     </div>
 </div>
 
+<!-- BLOG FOLDER WINDOW -->
+
+<div class="window" id="blog">
+    <div class="window-header">
+        <span class="window-title">🗂️ File Manager — blog</span>
+
+        <div class="window-controls">
+            <button onclick="minimize('blog')" title="Minimize">_</button>
+            <button class="fs-btn" onclick="toggleFullscreen('blog')" title="Fullscreen">⛶</button>
+            <button onclick="closeWindow('blog')" title="Close">×</button>
+        </div>
+    </div>
+
+    <div class="window-content">
+
+        <small>/home/shivank/blog/</small>
+        <hr>
+
+        <h1>Blog</h1>
+
+        <p>Notes, tutorials and things I've learned.</p>
+
+        <div class="project">
+            <h3>📄 switching-from-wpa-supplicant-to-iwd.md</h3>
+
+            <p>How I Switched from wpa_supplicant to iwd</p>
+
+            <a href="#" onclick="openWindow('blog-post'); return false;">
+                [ OPEN FILE ↗ ]
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<!-- BLOG POST WINDOW -->
+
+<div class="window" id="blog-post">
+
+    <div class="window-header">
+        <span class="window-title">
+            📄 switching-from-wpa_supplicant-to-iwd.md
+        </span>
+
+        <div class="window-controls">
+            <button onclick="minimize('blog-post')" title="Minimize">_</button>
+            <button class="fs-btn" onclick="toggleFullscreen('blog-post')" title="Fullscreen">⛶</button>
+            <button onclick="closeWindow('blog-post')" title="Close">×</button>
+        </div>
+    </div>
+
+    <div class="window-content blog-article">
+
+        <small>/home/shivank/blog/switching-from-wpa-supplicant-to-iwd.md</small>
+
+        <hr>
+
+        <h1>
+            How I Switched from
+            <code>wpa_supplicant</code> to <code>iwd</code>
+        </h1>
+
+        <h2>1. Install iwd</h2>
+
+        <p>Install <code>iwd</code> using DNF:</p>
+
+        <div class="terminal">
+            sudo dnf install iwd
+        </div>
+
+        <h2>2. Disable wpa_supplicant</h2>
+
+        <p>
+            Since we will be using <code>iwd</code> instead,
+            disable and stop <code>wpa_supplicant</code>:
+        </p>
+
+        <div class="terminal">
+            sudo systemctl disable --now wpa_supplicant
+        </div>
+
+        <h2>3. Start the iwd daemon</h2>
+
+        <p>Start the <code>iwd</code> service:</p>
+
+        <div class="terminal">
+            sudo systemctl start iwd.service
+        </div>
+
+        <h2>4. Configure NetworkManager to use iwd</h2>
+
+        <p>
+            Change the NetworkManager configuration to use
+            <code>iwd</code> as its Wi-Fi backend.
+        </p>
+
+        <p>Open the configuration file:</p>
+
+        <div class="terminal">
+            sudo nano /etc/NetworkManager/conf.d/iwd.conf
+        </div>
+
+        <p>Add the following lines:</p>
+
+        <div class="terminal">
+            [device]<br>
+            wifi.backend=iwd
+        </div>
+
+        <p>Save the file and exit.</p>
+
+        <h2>5. Restart NetworkManager and reboot</h2>
+
+        <p>Apply the changes by restarting NetworkManager:</p>
+
+        <div class="terminal">
+            sudo systemctl restart NetworkManager
+        </div>
+
+        <p>Finally, reboot the system:</p>
+
+        <div class="terminal">
+            sudo reboot
+        </div>
+
+        <h2>6. Recovering saved Wi-Fi passwords</h2>
+
+        <p>
+            The annoying part of this switch was having to manually
+            enter the Wi-Fi passwords again.
+        </p>
+
+        <p>
+            NetworkManager had the existing connection profiles,
+            and I was able to retrieve the saved SSIDs and passwords
+            by running:
+        </p>
+
+        <div class="terminal">
+            sudo grep -H -E '^(ssid|psk)=' /etc/NetworkManager/system-connections/*.nmconnection
+        </div>
+
+        <p>
+            This displays the saved Wi-Fi network names
+            (<code>ssid</code>) and passwords (<code>psk</code>).
+        </p>
+
+        <div class="project" style="border-left: 4px solid #c58a32;">
+            <h3>⚠ Security Warning</h3>
+
+            <p>
+                Be aware that this command displays Wi-Fi passwords
+                in plain text! Be careful not to share its output
+                or expose it in logs.
+            </p>
+        </div>
+
+        <hr>
+
+        <p>
+            <small>END</small>
+        </p>
+
+    </div>
+</div>
+
 <!-- ACHIEVEMENTS WINDOW -->
 
 <div class="window" id="achievements">
     <div class="window-header">
         <span class="window-title">🏆 File Manager — Achievements</span>
         <div class="window-controls">
-            <button onclick="minimize('achievements')">_</button>
-            <button onclick="closeWindow('achievements')">×</button>
+            <button onclick="minimize('achievements')" title="Minimize">_</button>
+            <button class="fs-btn" onclick="toggleFullscreen('achievements')" title="Fullscreen">⛶</button>
+            <button onclick="closeWindow('achievements')" title="Close">×</button>
         </div>
     </div>
 
@@ -644,8 +917,9 @@ hr {
     <div class="window-header">
         <span class="window-title">⚙ system-info.txt</span>
         <div class="window-controls">
-            <button onclick="minimize('skills')">_</button>
-            <button onclick="closeWindow('skills')">×</button>
+            <button onclick="minimize('skills')" title="Minimize">_</button>
+            <button class="fs-btn" onclick="toggleFullscreen('skills')" title="Fullscreen">⛶</button>
+            <button onclick="closeWindow('skills')" title="Close">×</button>
         </div>
     </div>
 
@@ -660,7 +934,7 @@ hr {
         <p>▸ Occasionally participate in OverTheWire CTFs</p>
 
         <hr>
-        
+
     </div>
 </div>
 
@@ -670,8 +944,9 @@ hr {
     <div class="window-header">
         <span class="window-title">✉ contact.txt</span>
         <div class="window-controls">
-            <button onclick="minimize('contact')">_</button>
-            <button onclick="closeWindow('contact')">×</button>
+            <button onclick="minimize('contact')" title="Minimize">_</button>
+            <button class="fs-btn" onclick="toggleFullscreen('contact')" title="Fullscreen">⛶</button>
+            <button onclick="closeWindow('contact')" title="Close">×</button>
         </div>
     </div>
 
@@ -701,8 +976,9 @@ hr {
     <div class="window-header">
         <span class="window-title">▣ Terminal — shivank</span>
         <div class="window-controls">
-            <button onclick="minimize('terminal')">_</button>
-            <button onclick="closeWindow('terminal')">×</button>
+            <button onclick="minimize('terminal')" title="Minimize">_</button>
+            <button class="fs-btn" onclick="toggleFullscreen('terminal')" title="Fullscreen">⛶</button>
+            <button onclick="closeWindow('terminal')" title="Close">×</button>
         </div>
     </div>
 
@@ -727,6 +1003,12 @@ hr {
     <button class="task" id="task-projects"
         onclick="openWindow('projects')">projects</button>
 
+    <button class="task" id="task-blog"
+        onclick="openWindow('blog')">blog</button>
+
+    <button class="task" id="task-blog-post"
+        onclick="openWindow('blog-post')">blog-post</button>
+
     <button class="task" id="task-achievements"
         onclick="openWindow('achievements')">achievements</button>
 
@@ -736,7 +1018,7 @@ hr {
 </div>
 
 <script>
-const windows = ['about', 'projects', 'achievements', 'skills', 'contact', 'terminal'];
+const windows = ['about', 'projects', 'blog', 'blog-post', 'achievements', 'skills', 'contact', 'terminal'];
 let highestZ = 10;
 
 function toggleMenu() {
@@ -780,6 +1062,22 @@ function minimize(id) {
     closeWindow(id);
 }
 
+/* FULLSCREEN */
+
+function toggleFullscreen(id) {
+    const win = document.getElementById(id);
+    if (!win) return;
+
+    const isFull = win.classList.toggle('fullscreen');
+    win.style.zIndex = ++highestZ;
+
+    const btn = win.querySelector('.fs-btn');
+    if (btn) {
+        btn.textContent = isFull ? '❐' : '⛶';
+        btn.title = isFull ? 'Restore' : 'Fullscreen';
+    }
+}
+
 // Bring clicked window to front
 
 document.querySelectorAll('.window').forEach(win => {
@@ -798,6 +1096,8 @@ document.querySelectorAll('.window-header').forEach(header => {
         if (e.target.tagName === 'BUTTON') return;
 
         const win = header.parentElement;
+        if (win.classList.contains('fullscreen')) return;
+
         dragging = true;
 
         win.style.zIndex = ++highestZ;
